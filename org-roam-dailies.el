@@ -53,6 +53,12 @@
   :group 'org-roam
   :type 'string)
 
+(defcustom org-roam-dailies-date-regexp ""
+  "Regular expression pattern for daily notes.
+Useful if there are other files in `org-roam-dailies-directory`."
+  :group 'org-roam
+  :type 'regexp)
+
 (defcustom org-roam-dailies-find-file-hook nil
   "Hook that is run right after navigating to a daily-note."
   :group 'org-roam
@@ -281,7 +287,8 @@ Prefer past dates, unless PREFER-FUTURE is non-nil."
   "List all files in `org-roam-dailies-directory'.
 EXTRA-FILES can be used to append extra files to the list."
   (let ((dir (org-roam-dailies-directory--get-absolute-path))
-	(regexp (rx-to-string `(and "." (or ,@org-roam-file-extensions)))))
+	(regexp (concat org-roam-dailies-date-regexp
+                        (rx-to-string `(and "." (or ,@org-roam-file-extensions))))))
     (append (--remove (let ((file (file-name-nondirectory it)))
                         (when (or (auto-save-file-name-p file)
                                   (backup-file-name-p file)
